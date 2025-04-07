@@ -179,13 +179,11 @@ metadata:
   annotations:
     harvesterhci.io/storageClassName: px-fa-direct-access
 spec:
+  backend: cdi
   displayName: fa-rocky94
   retry: 3
   sourceType: download
-  storageClassParameters:
-    migratable: 'true'
-    numberOfReplicas: '3'
-    staleReplicaTimeout: '30'
+  targetStorageClassName: px-fa-direct-access
   url: https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
 EOF
 ```
