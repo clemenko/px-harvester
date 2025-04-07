@@ -115,6 +115,8 @@ kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=p
 
 kubectl apply -f 'https://install.portworx.com/3.2?comp=pxoperator&kbver=1.32.3&ns=portworx'
 
+# add annotation of "    portworx.io/health-check: "skip" " for running on a single node
+
 cat << EOF | kubectl apply -n portworx  -f -
 kind: StorageCluster
 apiVersion: core.libopenstorage.org/v1
@@ -123,7 +125,6 @@ metadata:
   namespace: portworx
   annotations:
     portworx.io/misc-args: "--oem px-csi"
-    portworx.io/health-check: "skip" 
 spec:
   image: portworx/oci-monitor:25.2.0
   imagePullPolicy: IfNotPresent
