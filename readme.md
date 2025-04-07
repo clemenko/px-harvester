@@ -10,7 +10,7 @@ tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester clust
 
 Install Harvester on your favorite hardware.
 
-## run zharvester_setup.sh
+## run harvester_setup.sh
 
 run the attached script for easy setup of images and networking.
 
