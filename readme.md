@@ -2,6 +2,8 @@
 
 This is a quick guide for adding Portworx CSI (px-csi) to Harvester.
 
+Based on https://docs.harvesterhci.io/v1.5/advanced/csidriver/.
+
 Currently only [v1.5.0-rc3](https://github.com/harvester/harvester/releases/tag/v1.5.0-rc3) supports remote booting.
 
 tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester cluster. Patch `storageprofile` for known issue.
@@ -167,6 +169,10 @@ Patch the StorageClass based off of https://docs.portworx.com/portworx-csi/relea
 ```bash
 kubectl patch storageprofile px-fa-direct-access --type=merge --patch '{"spec": {"claimPropertySets": [{"accessModes": ["ReadWriteMany"], "volumeMode": "Block"}, {"accessModes": ["ReadWriteOnce"], "volumeMode": "Block"}, {"accessModes": ["ReadWriteOnce"], "volumeMode": "Filesystem"}], "cloneStrategy": "csi-clone"}}'
 ```
+
+## update csi settings
+
+Update the Harvester CSI settings - https://docs.harvesterhci.io/v1.5/advanced/csidriver/#configure-harvester-cluster.
 
 ## add image
 
