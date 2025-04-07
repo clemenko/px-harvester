@@ -2,7 +2,7 @@
 
 This is a quick guide for adding Portworx CSI (px-csi) to Harvester.
 
-Currently only v1.5.0-rc3 supports remote booting.
+Currently only [v1.5.0-rc3](https://github.com/harvester/harvester/releases/tag/v1.5.0-rc3) supports remote booting.
 
 tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester cluster. Patch `storageprofile` for known issue.
 
