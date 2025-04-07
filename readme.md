@@ -95,7 +95,7 @@ reboot the nodes to make sure this takes effect.
 
 ## add portworx stuff
 
-Here we are going to install the CSI. Note the API token for a "storage admin" user.
+Here we are going to install the CSI. Note the API token for a "storage admin" user. Here are the docs : https://docs.portworx.com/portworx-csi/fa-file-system
 
 ```bash
 kubectl create ns portworx
