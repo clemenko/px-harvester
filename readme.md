@@ -161,7 +161,7 @@ parameters:
 EOF
 ```
 
-Patch the StorageClass
+Patch the StorageClass based off of https://docs.portworx.com/portworx-csi/release-notes.html#known-issues
 
 ```bash
 kubectl patch storageprofile px-fa-direct-access --type=merge --patch '{"spec": {"claimPropertySets": [{"accessModes": ["ReadWriteMany"], "volumeMode": "Block"}, {"accessModes": ["ReadWriteOnce"], "volumeMode": "Block"}, {"accessModes": ["ReadWriteOnce"], "volumeMode": "Filesystem"}], "cloneStrategy": "csi-clone"}}'
