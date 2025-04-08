@@ -28,7 +28,6 @@ command -v kubectl >/dev/null 2>&1 || { fatal "Kubectl was not found. Please ins
 
 info " - waiting for harvester "
 until curl -skf -m 1 --output /dev/null https://$vip/v3-public ; do echo -n  "." ; sleep 10 ; done
-sleep 60
 info_ok
 
 info " - setting long password"
