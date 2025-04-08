@@ -97,7 +97,7 @@ reboot the nodes to make sure this takes effect.
 
 ## add portworx stuff
 
-Here we are going to install the CSI. Note the API token for a "storage admin" user. Here are the docs : https://docs.portworx.com/portworx-csi/fa-file-system
+Here we are going to install the CSI. Note the API token for a "storage admin" user. Here are the docs : https://docs.portworx.com/portworx-enterprise/platform/kubernetes/flasharray/install/install-flasharray/install-flasharray-cd-da
 
 ```bash
 kubectl create ns portworx
@@ -127,6 +127,7 @@ metadata:
   namespace: portworx
   annotations:
     portworx.io/misc-args: "--oem px-csi"
+    portworx.io/health-check: "skip"
 spec:
   image: portworx/oci-monitor:25.2.0
   imagePullPolicy: IfNotPresent
