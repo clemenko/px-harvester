@@ -16,6 +16,11 @@ Install Harvester on your favorite hardware.
 
 run the attached script for easy setup of images and networking.
 
+```bash
+# my notes
+./harvester_setup.sh && mv 192.168.1.12.yaml ~/Dropbox/work/rfed.me/slim.yaml
+```
+
 ## add multipathd
 
 to all the harvester nodes
@@ -117,7 +122,9 @@ kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=p
 
 kubectl apply -f 'https://install.portworx.com/3.2?comp=pxoperator&kbver=1.32.3&ns=portworx'
 
-# add annotation of "    portworx.io/health-check: "skip" " for running on a single node
+# add annotation of "portworx.io/health-check: "skip" " for running on a single node
+
+#  If you want nvme-tcp change the value: "NVMEOF-TCP"
 
 cat << EOF | kubectl apply -n portworx  -f -
 kind: StorageCluster
@@ -149,15 +156,15 @@ spec:
   env:
   - name: PURE_FLASHARRAY_SAN_TYPE
     value: "ISCSI"
-EOF
 
-cat << EOF | kubectl apply -n portworx  -f -
+---
+
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: px-csi-snapclass
   annotations:
-    snapshot.storage.kubernetes.io/is-default-class: "true"
+    snapshot.storage.kubernetes.io/is-default-class: "false"
 driver: pxd.portworx.com
 deletionPolicy: Delete
 parameters:
