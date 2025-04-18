@@ -77,7 +77,7 @@ spec:
 apiVersion: harvesterhci.io/v1beta1
 kind: VirtualMachineImage
 metadata:
-  name: noble
+  name: plucky
   annotations:
     harvesterhci.io/storageClassName: harvester-longhorn
   labels:
@@ -85,14 +85,14 @@ metadata:
     harvesterhci.io/os-type: ubuntu
   namespace: default
 spec:
-  displayName: noble
+  displayName: plucky
   retry: 3
   sourceType: download
   storageClassParameters:
     migratable: 'true'
     numberOfReplicas: '3'
     staleReplicaTimeout: '30'
-  url: https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
+  url: https://cloud-images.ubuntu.com/minimal/releases/plucky/release/ubuntu-25.04-minimal-cloudimg-amd64.img
 ---
 
 apiVersion: harvesterhci.io/v1beta1

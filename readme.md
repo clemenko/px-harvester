@@ -189,17 +189,17 @@ cat << EOF | kubectl apply -f -
 apiVersion: harvesterhci.io/v1beta1
 kind: VirtualMachineImage
 metadata:
-  name: fa-rocky94
+  name: fa-plucky
   namespace: default
   annotations:
     harvesterhci.io/storageClassName: px-fa-direct-access
 spec:
   backend: cdi
-  displayName: fa-rocky94
+  displayName: fa-plucky
   retry: 3
   sourceType: download
   targetStorageClassName: px-fa-direct-access
-  url: https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
+  url: https://cloud-images.ubuntu.com/minimal/releases/plucky/release/ubuntu-25.04-minimal-cloudimg-amd64.img
 EOF
 ```
 
