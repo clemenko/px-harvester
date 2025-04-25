@@ -105,6 +105,38 @@ spec:
 
 ---
 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    harvesterhci.io/cloud-init-template: user
+  name: default
+  namespace: default
+data:
+  cloudInit: |-
+    #cloud-config
+    disable_root: false
+    packages:
+      - vim
+      - sudo
+      - bind-utils
+      - qemu-guest-agent
+      - htop
+    runcmd:
+      - sysctl -w net.ipv6.conf.all.disable_ipv6=1
+      - systemctl restart qemu-guest-agent
+      - yum install -y epel-release && yum install -y htop jq
+    ssh_pwauth: True
+    users:
+      - name: root
+        hashed_passwd: \$6\$911qHLlKBOcS6/n/\$G4fpeL4JJsrYAfORGf5nRzwSm0YBnIwm1FTyLx365chA.hvX7Yy9yeAEBEXhJ72sa1PgN8YT7sOnRJ4Max6Nr0
+        lock_passwd: false
+        shell: /bin/bash
+        ssh_authorized_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA26evmemRbhTtjV9szD9SwcFW9VOD38jDuJmyYYdqoqIltDkpUqDa/V1jxLSyrizhOHrlJtUOj790cxrvInaBNP7nHIO+GwC9VH8wFi4KG/TFj3K8SfNZ24QoUY12rLiHR6hRxcT4aUGnqFHGv2WTqsW2sxz03z+W1qeMqWYJOUfkqKKs2jiz42U+0Kp9BxsFBlai/WAXrQsYC8CcpQSRKdggOMQf04CqqhXzt5Q4Cmago+Fr7HcvEnPDAaNcVtfS5DYLERcX2OVgWT3RBWhDIjD8vYCMBBCy2QUrc4ZhKZfkF9aemjnKLfLcbdpMfb+r7NwJsVQSPKcjYAJOckE8RQ== clemenko@clemenko.local
+
+---
+
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
