@@ -65,14 +65,14 @@ metadata:
     harvesterhci.io/os-type: rocky
   namespace: default
 spec:
-  displayName: rocky95
+  displayName: rocky10
   retry: 3
   sourceType: download
   storageClassParameters:
     migratable: 'true'
     numberOfReplicas: '3'
     staleReplicaTimeout: '30'
-  url: https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
+  url: https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2
 ---
 apiVersion: harvesterhci.io/v1beta1
 kind: VirtualMachineImage
