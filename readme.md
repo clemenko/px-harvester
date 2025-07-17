@@ -120,7 +120,7 @@ EOF
 
 kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
-kubectl apply -f 'https://install.portworx.com/25.4.1?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx'
+kubectl apply -f 'https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx'
 
 # add annotation of "portworx.io/health-check: "skip" " for running on a single node
 
@@ -136,12 +136,12 @@ metadata:
     portworx.io/misc-args: "--oem px-csi"
     portworx.io/health-check: "skip"
 spec:
-  image: portworx/oci-monitor:25.4.1
+  image: portworx/oci-monitor:25.6.0
   imagePullPolicy: IfNotPresent
   kvdb:
     internal: true
   cloudStorage:
-    kvdbDeviceSpec: size=10
+    kvdbDeviceSpec: size=9
   stork:
     enabled: false
   csi:
@@ -151,8 +151,8 @@ spec:
     telemetry:
       enabled: false
     prometheus:
-      enabled: false
-      exportMetrics: false
+      enabled: true
+      exportMetrics: true
   env:
   - name: PURE_FLASHARRAY_SAN_TYPE
     value: "ISCSI"
