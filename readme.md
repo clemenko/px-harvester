@@ -54,7 +54,6 @@ spec:
                     no_path_retry               0
                     features                    0
                     dev_loss_tmo                60
-                    find_multipaths             yes
                 }
                 device {
                     vendor                   "PURE"
@@ -70,7 +69,6 @@ spec:
                     no_path_retry            0
                     features                 0
                     dev_loss_tmo             600
-                    find_multipaths          yes
                 }
             }
             blacklist_exceptions {
