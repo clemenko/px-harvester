@@ -142,6 +142,8 @@ spec:
     kvdbDeviceSpec: size=9
   stork:
     enabled: false
+  security:
+    enabled: false
   csi:
     enabled: true
     installSnapshotController: true
