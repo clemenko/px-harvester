@@ -118,6 +118,7 @@ data:
       - sudo
       - bind-utils
       - qemu-guest-agent
+      - rsync
       - htop
     runcmd:
       - sysctl -w net.ipv6.conf.all.disable_ipv6=1
