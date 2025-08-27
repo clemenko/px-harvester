@@ -28,13 +28,11 @@ command -v kubectl >/dev/null 2>&1 || { fatal "Kubectl was not found. Please ins
 
 info " - waiting for harvester "
 until curl -skf -m 1 --output /dev/null https://$vip/v3-public ; do echo -n  "." ; sleep 10 ; done
-info_ok
 
 info " - setting long password"
 token=$(curl -sk -X POST https://$vip/v3-public/localProviders/local?action=login -H 'content-type: application/json' -d '{"username":"admin","password":"admin"}' | jq -r .token)
 
 curl -sk https://$vip/v3/users?action=changepassword -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"currentPassword":"admin","newPassword":"'$longPassword'"}'
-info_ok
 
 # reauthenticate
 api_token=$(curl -sk https://$vip/v3/token -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"type":"token","description":"automation"}' | jq -r .token)
@@ -42,7 +40,6 @@ api_token=$(curl -sk https://$vip/v3/token -H 'content-type: application/json' -
 info " - getting kubeconfig"
 curl -sk https://$vip/v1/management.cattle.io.clusters/local?action=generateKubeconfig -H "Authorization: Bearer $api_token" -X POST -H 'content-type: application/json' | jq -r .config | sed -e '/certificate-authority-data/,18d' -e '/server/ a\'$'\n''    insecure-skip-tls-verify: true' > $vip.yaml
 export KUBECONFIG=$vip.yaml
-info_ok
 
 # load password length, image, network, keypair and template
 info " - configuring password length, images, network, and keypair"
