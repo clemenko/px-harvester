@@ -1,10 +1,10 @@
 # PX + Harvester
 
-This is a quick guide for adding Portworx CSI (px-csi) to Harvester.
+This is a quick guide for adding Portworx CSI ( PX-CSI 25.6.0 ) to Harvester.
 
-Based on https://docs.harvesterhci.io/v1.5/advanced/csidriver/.
+Based on https://docs.harvesterhci.io/v1.6/advanced/csidriver/.
 
-Currently only [v1.5.1](https://github.com/harvester/harvester/releases/tag/v1.5.1) and above supports remote booting.
+Currently only [v1.6.0](https://github.com/harvester/harvester/releases/tag/v1.6.0) and above supports remote booting.
 
 tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester cluster. Patch `storageprofile` for known issue.
 
@@ -139,7 +139,7 @@ spec:
   kvdb:
     internal: true
   cloudStorage:
-    kvdbDeviceSpec: size=9
+    kvdbDeviceSpec: size=20
   stork:
     enabled: false
   security:
@@ -172,15 +172,9 @@ parameters:
 EOF
 ```
 
-Patch the StorageClass based off of https://docs.portworx.com/portworx-csi/release-notes.html#known-issues
-
-```bash
-kubectl patch storageprofile px-fa-direct-access --type=merge --patch '{"spec": {"claimPropertySets": [{"accessModes": ["ReadWriteMany"], "volumeMode": "Block"}, {"accessModes": ["ReadWriteOnce"], "volumeMode": "Block"}, {"accessModes": ["ReadWriteOnce"], "volumeMode": "Filesystem"}], "cloneStrategy": "csi-clone"}}'
-```
-
 ## update csi settings
 
-Update the Harvester CSI settings - https://docs.harvesterhci.io/v1.5/advanced/csidriver/#configure-harvester-cluster.
+Update the Harvester CSI settings - https://docs.harvesterhci.io/v1.6/advanced/csidriver/#configure-harvester-cluster.
 
 ## add image
 
