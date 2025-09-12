@@ -124,6 +124,8 @@ data:
       - sysctl -w net.ipv6.conf.all.disable_ipv6=1
       - systemctl restart qemu-guest-agent
       - yum install -y epel-release && yum install -y htop jq
+      - systemctl disable --now cockpit.service cockpit.socket
+      - yum remove -y cockpit-bridge cockpit-system cockpit-ws rpcbind
     ssh_pwauth: True
     users:
       - name: root
