@@ -1,0 +1,34 @@
+# this is an example storagecluster yaml for air gapped installs
+kind: StorageCluster
+apiVersion: core.libopenstorage.org/v1
+metadata:
+  name: px-cluster
+  namespace: portworx
+  annotations:
+    portworx.io/misc-args: "--oem px-csi"
+#    portworx.io/health-check: "skip"
+spec:
+  image: portworx/oci-monitor:25.6.0
+  imagePullPolicy: IfNotPresent
+  customImageRegistry: 192.168.1.78
+  # imagePullSecret: px-reg-secret
+  kvdb:
+    internal: true
+  cloudStorage:
+    kvdbDeviceSpec: size=20
+  stork:
+    enabled: false
+  security:
+    enabled: false
+  csi:
+    enabled: true
+    installSnapshotController: true
+  monitoring:
+    telemetry:
+      enabled: false
+    prometheus:
+      enabled: true
+      exportMetrics: true
+  env:
+  - name: PURE_FLASHARRAY_SAN_TYPE
+    value: "ISCSI"

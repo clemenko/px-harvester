@@ -118,6 +118,9 @@ EOF
 
 kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
+kubectl create secret generic px-pure-secret -n portworx --from-literal=pure.json="{\n    FlashArrays: [{MgmtEndPoint: 192.168.1.11, APIToken: 934f95b6-6d1d-ee91-d210-6ed9bce13ad1}]}"
+
+
 kubectl apply -f 'https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx'
 
 # add annotation of "portworx.io/health-check: "skip" " for running on a single node
@@ -156,19 +159,6 @@ spec:
   env:
   - name: PURE_FLASHARRAY_SAN_TYPE
     value: "ISCSI"
-
----
-
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshotClass
-metadata:
-  name: px-csi-snapclass
-  annotations:
-    snapshot.storage.kubernetes.io/is-default-class: "false"
-driver: pxd.portworx.com
-deletionPolicy: Delete
-parameters:
-  csi.openstorage.org/snapshot-type: local
 EOF
 ```
 
