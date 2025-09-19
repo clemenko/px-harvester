@@ -84,9 +84,13 @@ compress
 
 `tar -cf /opt/pure_airgap_$(date '+%m_%d_%y').tar $(ls)`
 
-### Move the Tar
+---
 
-This will hight depend on your network and security levels. Diode, DVD, BluRay, or even Thumbdrive are all options. Just get the tarball over to the air-gapped side.
+## Move the Tar
+
+This will highly depend on your network and security levels. Diode, DVD, BluRay, or even Thumbdrive are all options. Just get the tarball over to the air-gapped side.
+
+---
 
 ## Unpack and Serve - Air Gap side
 
