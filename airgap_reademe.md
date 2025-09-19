@@ -18,7 +18,7 @@ cat << EOF > /opt/pure/airgap.yaml
 apiVersion: content.hauler.cattle.io/v1
 kind: Files
 metadata:
-  name: purity-files
+  name: purex-files
 spec:
   files:
     #- path: https://releases.purestorage.com/flasharray/purity/6.9.0/purity_6.9.0_202507150448%2Bdd9281824b54.ppkg
@@ -32,6 +32,8 @@ spec:
       name: operator.yaml
     - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/readme.md
       name: px_harvester.md
+    - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/StorageCluster_example.yaml
+    - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/airgap_reademe.md
 
 ---
 apiVersion: content.hauler.cattle.io/v1
@@ -63,48 +65,7 @@ Now we can sync and create the local hauler store.
 
 `hauler store sync -f /opt/pure/airgap.yaml`
 
-We also need to add yamls and configmaps to the local directory.
-
-```bash
-
-
-cat << EOF > /opt/pure/yamls/StorageCluster_example.yaml
-kind: StorageCluster
-apiVersion: core.libopenstorage.org/v1
-metadata:
-  name: px-cluster
-  namespace: portworx
-  annotations:
-    portworx.io/misc-args: "--oem px-csi"
-#    portworx.io/health-check: "skip"
-spec:
-  image: portworx/oci-monitor:25.6.0
-  imagePullPolicy: IfNotPresent
-  customImageRegistry: 192.168.1.78
-  # imagePullSecret: px-reg-secret
-  kvdb:
-    internal: true
-  cloudStorage:
-    kvdbDeviceSpec: size=20
-  stork:
-    enabled: false
-  security:
-    enabled: false
-  csi:
-    enabled: true
-    installSnapshotController: true
-  monitoring:
-    telemetry:
-      enabled: false
-    prometheus:
-      enabled: true
-      exportMetrics: true
-  env:
-  - name: PURE_FLASHARRAY_SAN_TYPE
-    value: "ISCSI"
-EOF
-
-Add local pdfs and markdown
+Add local pdfs if needed. 
 
 ```bash
 hauler store add file user_guides_for_vsphere_plugin.pdf
@@ -121,31 +82,59 @@ Add the Hauler binary
 
 compress
 
-`tar -I zstd -cf /opt/pure_airgap_$(date '+%m_%d_%y').zst $(ls)`
+`tar -cf /opt/pure_airgap_$(date '+%m_%d_%y').tar $(ls)`
 
 ### Move the Tar
 
 This will hight depend on your network and security levels. Diode, DVD, BluRay, or even Thumbdrive are all options. Just get the tarball over to the air-gapped side.
 
-
-## Unpack and Server - Air Gap side
+## Unpack and Serve - Air Gap side
 
 Once you have the tar on the air gapped side we need to uncompress it.
 
 ```bash
 mkdir /opt/pure
-tar -I zstd -vxf pure_airgap_$(date '+%m_%d_%y').zst -C /opt/pure
+tar -vxf pure_airgap_$(date '+%m_%d_%y').tar -C /opt/pure
+cd /opt/pure
 ```
 
+This is a step that may not be necessary. If you want to push the images to an internal registry you can use the command: 
 
-This is a step that may not be necessary. If you want to push the images to an internal registry you can use the command 
+`hauler store sync --filename <file-name> --platform <platform> --key <cosign-public-key> --registry <registry-url>`  
 
-`hauler store serve fileserver`
+Docs : https://docs.hauler.dev/docs/hauler-usage/store/sync
 
-## Download ppkg to the array
+### serve all the things
 
-`curl -sfLO http://192.168.1.166/purity_6.9.0_202507150448%2Bdd9281824b54.ppkg`
+Hauler makes it fairly easy serve out the files and even the images if needed. We can take advantage of systemd.
 
-## Install PX
+```bash
+cat << EOF > /etc/systemd/system/hauler@.service
+# /etc/systemd/system/hauler.service
+[Unit]
+Description=Hauler Serve %I Service
 
-untar 
+[Service]
+Environment="HOME=/opt/pure/"
+ExecStart=/usr/local/bin/hauler store serve %i -s /opt/pure/store
+WorkingDirectory=/opt/pure/
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#reload daemon
+systemctl daemon-reload
+
+# start fileserver
+systemctl enable --now hauler@fileserver 
+
+# start reg
+systemctl enable --now hauler@registry
+```
+
+We can now navigate to the IP:8080 to see the files on the webserver. And check port 5000 for the registry.
+
+### Install PX
