@@ -118,8 +118,7 @@ EOF
 
 kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
-kubectl create secret generic px-pure-secret -n portworx --from-literal=pure.json="{\n    FlashArrays: [{MgmtEndPoint: 192.168.1.11, APIToken: 934f95b6-6d1d-ee91-d210-6ed9bce13ad1}]}"
-
+kubectl create secret generic px-pure-secret -n portworx --from-literal=pure.json="{FlashArrays: [{MgmtEndPoint: 192.168.1.11, APIToken: 934f95b6-6d1d-ee91-d210-6ed9bce13ad1}]}"
 
 kubectl apply -f 'https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx'
 
