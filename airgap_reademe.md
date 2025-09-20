@@ -222,17 +222,17 @@ reboot the nodes to make sure this takes effect.
 
 #### add registries field for rke2/harvester
 
-We need to tell the container engine to connect with http and not https. This needs to be run ON the node itself.
+We need to tell the container engine to connect with http and not https. This MAY need to be run ON the node itself.
 
 ```bash
-export HAULER_IP=192.168.1.133
+export HAULER_IP=192.168.1.185
 echo -e "mirrors:\n  \"$HAULER_IP:5000\":\n    endpoint:\n      - http://$HAULER_IP:5000\nconfigs:\n  "*":\n    tls:\n      insecure_skip_verify: true" > /etc/rancher/rke2/registries.yaml 
 ```
 
 For Harvester here is the config from the GUI : https://docs.harvesterhci.io/v1.3/advanced/index/#containerd-registry OR:
 
 ```bash
-export HAULER_IP=192.168.1.133
+export HAULER_IP=192.168.1.185
 cat << EOF | kubectl apply -f -
 apiVersion: harvesterhci.io/v1beta1
 kind: Setting
@@ -248,7 +248,7 @@ We need to create the namespace and add the secret with the API token. Go to the
 
 ```bash
 # set ip of hauler node
-export HAULER_IP=192.168.1.133
+export HAULER_IP=192.168.1.185
 export PURE_MGNT_VIP=192.168.1.11
 
 # create ns
@@ -266,7 +266,7 @@ curl -s http://$HAULER_IP:8080/operator.yaml | sed "s#portworx/px-operator#$HAUL
 
 #### add StorageCluster object
 
-This step gets a little tricky. We need to get the file [StorageCluster_example.yaml](http://192.168.1.133:8080/StorageCluster_example.yaml) from the hauler server and modify it. We will need to modify `customImageRegistry` to point to the correct hauler ip.
+This step gets a little tricky. We need to get the file [StorageCluster_example.yaml](http://192.168.1.185:8080/StorageCluster_example.yaml) from the hauler server and modify it. We will need to modify `customImageRegistry` to point to the correct hauler ip.
 
 ```yaml
 # this is an example storagecluster yaml for air gapped installs
@@ -309,7 +309,7 @@ We can cheat a little and script this and apply it.
 
 ```bash
 # get the yaml and change the ip
-curl -s http://192.168.1.133:8080/StorageCluster_example.yaml | sed "s/X.X.X.X/$HAULER_IP:5000/g" | kubectl apply -f -
+curl -s http://$HAULER_IP:8080/StorageCluster_example.yaml | sed "s/X.X.X.X/$HAULER_IP:5000/g" | kubectl apply -f -
 
 # and watch for 15 mintues
 watch -n 5 kubectl get pod -n portworx
