@@ -226,7 +226,7 @@ We need to tell the container engine to connect with http and not https. This MA
 
 ```bash
 export HAULER_IP=192.168.1.185
-echo -e "mirrors:\n  \"$HAULER_IP:5000\":\n    endpoint:\n      - http://$HAULER_IP:5000\nconfigs:\n  "*":\n    tls:\n      insecure_skip_verify: true" > /etc/rancher/rke2/registries.yaml 
+echo -e "mirrors:\n  \"$HAULER_IP:5000\":\n    endpoint:\n      - http://$HAULER_IP:5000" > /etc/rancher/rke2/registries.yaml 
 ```
 
 For Harvester here is the config from the GUI : https://docs.harvesterhci.io/v1.3/advanced/index/#containerd-registry OR:
@@ -255,7 +255,17 @@ export PURE_MGNT_VIP=192.168.1.11
 kubectl create ns portworx
 
 # create secret with API token 
-kubectl create secret generic px-pure-secret -n portworx --from-literal=pure.json="{FlashArrays: [{MgmtEndPoint: $PURE_MGNT_VIP, APIToken: 934f95b6-6d1d-ee91-d210-6ed9bce13ad1}]}"
+cat << EOF > pure.json 
+{
+    "FlashArrays": [
+        {
+            "MgmtEndPoint": "192.168.1.11",
+            "APIToken": "934f95b6-6d1d-ee91-d210-6ed9bce13ad1"
+        }
+    ]
+}
+EOF
+kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
 # add config map for versions
 kubectl -n portworx create configmap px-versions --from-literal=versions.yaml="$(curl -s http://$HAULER_IP:8080/versions.yaml)"
