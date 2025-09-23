@@ -1,10 +1,10 @@
 # Hauler All the Pure/Portworx Things
 
-This guide will show how we can easily air gap all the Pure and Portworx bits. We are going to use a tool from Rancher Gov called Hauler. Currently we are not using all the features of Hauler. This guide is using the FlashArray as the target storage device. There a few things than need to be changed to connect to a FLashBlade.
+This guide will show how we can easily air gap all the Pure and Portworx bits for Harvester. We are going to use a tool from Rancher Gov called Hauler. Currently we are not using all the features of Hauler. This guide is using the FlashArray as the target storage device. There a few things we will need to connect. An API token for the `pureuser`, the ip address, a linux host with internet access, and a linux host with access to the array.
 
-## install hauler - internet side
+## install hauler - INTERNET side
 
-Hauler is a swiss army knife for collecting and serving files across an air gap. https://docs.hauler.dev/docs/intro
+We are going to use the linux server with internet access. We will collect and tar the bits we need. Using Hauler as the swiss army knife for collecting and serving files across an air gap. https://docs.hauler.dev/docs/intro
 
 `curl -sfL https://get.hauler.dev | bash`
 
@@ -18,7 +18,7 @@ cat << EOF > /opt/pure/airgap.yaml
 apiVersion: content.hauler.cattle.io/v1
 kind: Files
 metadata:
-  name: purex-files
+  name: pure-files
 spec:
   files:
     #- path: https://releases.purestorage.com/flasharray/purity/6.9.0/purity_6.9.0_202507150448%2Bdd9281824b54.ppkg
@@ -34,7 +34,7 @@ spec:
       name: px_harvester.md
     - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/StorageCluster_example.yaml
     - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/airgap_reademe.md
-
+    - path: https://cloud-images.ubuntu.com/minimal/releases/plucky/release/ubuntu-25.04-minimal-cloudimg-amd64.img
 ---
 apiVersion: content.hauler.cattle.io/v1
 kind: Charts
@@ -56,12 +56,9 @@ spec:
 EOF
 
 for i in $(curl -s https://install.portworx.com/25.6.0/images); do echo "    - name: "$i >> /opt/pure/airgap.yaml ; done
-
-# temp fix for operator
-echo "    - name: docker.io/portworx/px-operator:25.3.1" >> /opt/pure/airgap.yaml
 ```
 
-Now we can sync and create the local hauler store.
+Now we can sync and create the local hauler store. This can take a minute or two depending on the images.
 
 `hauler store sync -f /opt/pure/airgap.yaml`
 
@@ -76,7 +73,7 @@ Validate the local store
 
 `hauler store info`
 
-Add the Hauler binary
+Add the Hauler binary to the `/opt/pure` directory.
 
 `rsync -avP /usr/local/bin/hauler /opt/pure/hauler`
 
@@ -94,15 +91,15 @@ This will highly depend on your network and security levels. Diode, DVD, BluRay,
 
 ## Unpack and Serve - Air Gap side
 
-Once you have the tar on the air gapped side we need to uncompress it.
+Once you have the tar on the air gapped side we need to uncompress it on the linux host.
 
 ```bash
-mkdir /opt/pure
+mkdir /opt/pure/cert
 tar -vxf pure_airgap_$(date '+%m_%d_%y').tar -C /opt/pure
 cd /opt/pure
 ```
 
-This is a step that may not be necessary. If you want to push the images to an internal registry you can use the command: 
+This is a step that may not be necessary. If you want to push the images to an internal registry you can use the command:
 
 `hauler store sync --filename <file-name> --platform <platform> --key <cosign-public-key> --registry <registry-url>`  
 
@@ -110,17 +107,39 @@ Docs : https://docs.hauler.dev/docs/hauler-usage/store/sync
 
 ### serve all the things
 
-Hauler makes it fairly easy serve out the files and even the images if needed. We can take advantage of systemd.
+Hauler makes it fairly easy serve out the files and even the images if needed. We can take advantage of systemd and create 2 "services". The registry service will create it's own self signed cert.
 
 ```bash
-cat << EOF > /etc/systemd/system/hauler@.service
-# /etc/systemd/system/hauler.service
+
+# we need the ip of this host
+export HAULER_IP=192.168.1.185
+openssl req -x509 -newkey rsa:4096 -keyout /opt/pure/cert/key.pem -out /opt/pure/cert/cert.pem -sha256 -days 3650 -nodes -subj "/C=US/ST=Maryland/L=Edgewater/O=PureStorage/OU=FluxDepartment/CN=$HAULER_IP"
+
+# create systemd files
+cat << EOF > /etc/systemd/system/hauler-fileserver.service
+# /etc/systemd/system/hauler-fileserver.service
 [Unit]
-Description=Hauler Serve %I Service
+Description=Hauler Serve FileServer Service
 
 [Service]
 Environment="HOME=/opt/pure/"
-ExecStart=/usr/local/bin/hauler store serve %i -s /opt/pure/store
+ExecStart=/usr/local/bin/hauler store serve fileserver -s /opt/pure/store
+WorkingDirectory=/opt/pure/
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat << EOF > /etc/systemd/system/hauler-registry.service
+# /etc/systemd/system/hauler-registry.service
+[Unit]
+Description=Hauler Serve Registry Service
+
+[Service]
+Environment="HOME=/opt/pure/"
+ExecStart=/usr/local/bin/hauler store serve registry -s /opt/pure/store --tls-cert /opt/pure/cert/cert.pem --tls-key /opt/pure/cert/key.pem 
 WorkingDirectory=/opt/pure/
 Restart=always
 RestartSec=5s
@@ -133,19 +152,19 @@ EOF
 systemctl daemon-reload
 
 # start fileserver
-systemctl enable --now hauler@fileserver 
+systemctl enable --now hauler-fileserver.service
 
 # start reg
-systemctl enable --now hauler@registry
+systemctl enable --now hauler-registry.service
 ```
 
-We can now navigate to the IP:8080 to see the files on the webserver. And check port 5000 for the registry.
+We can now navigate to the IP:8080 to see the files on the webserver. And check port 5000 for the registry. If it is not working we can run `ss -tln` to see if ports 8080, and 5000 are open. If not we can run `journalctl -xefu hauler-registry` or `journalctl -xefu hauler-fileserver` to see why.
 
-### Install PX
+## Install PX on Harvester
 
-If you are using Harvester we need to add multipathd.
+Now we need a machine with a kubeconfig talking directly to harvester. We can go to the support page in the harvester gui to download one. Harvester will need to add multipathd.
 
-#### multipathd
+### multipathd
 
 ```bash
 cat << EOF | kubectl apply -f -
@@ -218,37 +237,36 @@ spec:
 EOF
 ```
 
-reboot the nodes to make sure this takes effect.
+Reboot the nodes to make sure this takes effect.
 
-#### add registries field for rke2/harvester
+### add registries field for rke2/harvester
 
-We need to tell the container engine to connect with http and not https. This MAY need to be run ON the node itself.
+We need to tell the container engine on the node to skip verifying the tls cert for the registry. I added the code for rke2 since it is similar. Skip this for harvester.
 
 ```bash
+# this is for RKE2 ONLY
 export HAULER_IP=192.168.1.185
-echo -e "mirrors:\n  \"$HAULER_IP:5000\":\n    endpoint:\n      - http://$HAULER_IP:5000" > /etc/rancher/rke2/registries.yaml 
+echo -e "mirrors:\n  \"$HAULER_IP:5000\":\n    endpoint:\n      - $HAULER_IP:5000\nconfigs:\n  \"$HAULER_IP:5000\":\n    tls:\n      InsecureSkipVerify: true" > /etc/rancher/rke2/registries.yaml 
 ```
 
 For Harvester here is the config from the GUI : https://docs.harvesterhci.io/v1.3/advanced/index/#containerd-registry OR:
 
 ```bash
-export HAULER_IP=192.168.1.185
 cat << EOF | kubectl apply -f -
 apiVersion: harvesterhci.io/v1beta1
 kind: Setting
 metadata:
   name: containerd-registry
-value: '{"Mirrors":{"$HAULER_IP:5000":{"Endpoints":["http://$HAULER_IP:5000"],"Rewrites":null}},"Configs":null,"Auths":null}'
+value: '{"Mirrors":{"$HAULER_IP:5000":{"Endpoints":["1$HAULER_IP"],"Rewrites":null}},"Configs":{"$HAULER_IP:5000":{"Auth":null,"TLS":{"CAFile":"","CertFile":"","KeyFile":"","InsecureSkipVerify":true}}},"Auths":null}'
 EOF
 ```
 
-#### add operator - from jump box with kubectl access
+### add operator - from jump box with kubectl access
 
 We need to create the namespace and add the secret with the API token. Go to the GUI and create the user token. This is from the pureuser account. We also need to change the IP address from the
 
 ```bash
 # set ip of hauler node
-export HAULER_IP=192.168.1.185
 export PURE_MGNT_VIP=192.168.1.11
 
 # create ns
@@ -274,9 +292,9 @@ kubectl -n portworx create configmap px-versions --from-literal=versions.yaml="$
 curl -s http://$HAULER_IP:8080/operator.yaml | sed "s#portworx/px-operator#$HAULER_IP:5000/portworx/px-operator#g" | kubectl apply -f -
 ```
 
-#### add StorageCluster object
+### add StorageCluster object
 
-This step gets a little tricky. We need to get the file [StorageCluster_example.yaml](http://192.168.1.185:8080/StorageCluster_example.yaml) from the hauler server and modify it. We will need to modify `customImageRegistry` to point to the correct hauler ip.
+This step gets a little tricky. We need to get the file [StorageCluster_example.yaml](StorageCluster_example.yaml) from the hauler server and modify it. We will need to modify `customImageRegistry` to point to the correct hauler ip. Here is an example.
 
 ```yaml
 # this is an example storagecluster yaml for air gapped installs
@@ -291,7 +309,7 @@ metadata:
 spec:
   image: portworx/oci-monitor:25.6.0
   imagePullPolicy: IfNotPresent
-  customImageRegistry: X.X.X.X
+  customImageRegistry: 192.168.1.185
   # imagePullSecret: px-reg-secret
   kvdb:
     internal: true
@@ -321,10 +339,31 @@ We can cheat a little and script this and apply it.
 # get the yaml and change the ip
 curl -s http://$HAULER_IP:8080/StorageCluster_example.yaml | sed "s/X.X.X.X/$HAULER_IP:5000/g" | kubectl apply -f -
 
-# and watch for 15 mintues
+# and watch for a little while. It may take some time for everything to be running.
 watch -n 5 kubectl get pod -n portworx
 ```
 
+### add image to Harvester
 
+We need to add an OS image to harvester and the array.
 
+```bash
+cat << EOF | kubectl apply -f -
+apiVersion: harvesterhci.io/v1beta1
+kind: VirtualMachineImage
+metadata:
+  name: fa-plucky
+  namespace: default
+  annotations:
+    harvesterhci.io/storageClassName: px-fa-direct-access
+spec:
+  backend: cdi
+  displayName: fa-plucky
+  retry: 3
+  sourceType: download
+  targetStorageClassName: px-fa-direct-access
+  url: http://$HAULER_IP:8080/ubuntu-25.04-minimal-cloudimg-amd64.img
+EOF
+```
 
+Now deploy a VM.
