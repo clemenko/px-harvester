@@ -309,7 +309,7 @@ metadata:
 spec:
   image: portworx/oci-monitor:25.6.0
   imagePullPolicy: IfNotPresent
-  customImageRegistry: 192.168.1.216
+  customImageRegistry: X.X.X.X
   # imagePullSecret: px-reg-secret
   kvdb:
     internal: true
