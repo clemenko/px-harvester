@@ -257,7 +257,7 @@ apiVersion: harvesterhci.io/v1beta1
 kind: Setting
 metadata:
   name: containerd-registry
-value: '{"Mirrors":{"$HAULER_IP:5000":{"Endpoints":["1$HAULER_IP"],"Rewrites":null}},"Configs":{"$HAULER_IP:5000":{"Auth":null,"TLS":{"CAFile":"","CertFile":"","KeyFile":"","InsecureSkipVerify":true}}},"Auths":null}'
+value: '{"Mirrors":{"$HAULER_IP:5000":{"Endpoints":["$HAULER_IP"],"Rewrites":null}},"Configs":{"$HAULER_IP:5000":{"Auth":null,"TLS":{"CAFile":"","CertFile":"","KeyFile":"","InsecureSkipVerify":true}}},"Auths":null}'
 EOF
 ```
 
