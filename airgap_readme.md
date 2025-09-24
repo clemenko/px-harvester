@@ -94,7 +94,7 @@ This will highly depend on your network and security levels. Diode, DVD, BluRay,
 Once you have the tar on the air gapped side we need to uncompress it on the linux host.
 
 ```bash
-mkdir /opt/pure/cert
+mkdir -p /opt/pure/cert
 tar -vxf pure_airgap_$(date '+%m_%d_%y').tar -C /opt/pure
 cd /opt/pure
 ```
