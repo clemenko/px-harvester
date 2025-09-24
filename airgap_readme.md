@@ -112,7 +112,7 @@ Hauler makes it fairly easy serve out the files and even the images if needed. W
 ```bash
 
 # we need the ip of this host
-export HAULER_IP=192.168.1.185
+export HAULER_IP=192.168.1.216
 openssl req -x509 -newkey rsa:4096 -keyout /opt/pure/cert/key.pem -out /opt/pure/cert/cert.pem -sha256 -days 3650 -nodes -subj "/C=US/ST=Maryland/L=Edgewater/O=PureStorage/OU=FluxDepartment/CN=$HAULER_IP"
 
 # create systemd files
@@ -245,7 +245,7 @@ We need to tell the container engine on the node to skip verifying the tls cert 
 
 ```bash
 # this is for RKE2 ONLY
-export HAULER_IP=192.168.1.185
+export HAULER_IP=192.168.1.216
 echo -e "mirrors:\n  \"$HAULER_IP:5000\":\n    endpoint:\n      - $HAULER_IP:5000\nconfigs:\n  \"$HAULER_IP:5000\":\n    tls:\n      InsecureSkipVerify: true" > /etc/rancher/rke2/registries.yaml 
 ```
 
@@ -309,7 +309,7 @@ metadata:
 spec:
   image: portworx/oci-monitor:25.6.0
   imagePullPolicy: IfNotPresent
-  customImageRegistry: 192.168.1.185
+  customImageRegistry: 192.168.1.216
   # imagePullSecret: px-reg-secret
   kvdb:
     internal: true
