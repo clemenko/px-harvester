@@ -1,6 +1,6 @@
 # Hauler All the Pure/Portworx Things
 
-This guide will show how we can easily air gap all the Pure and Portworx bits for Harvester. We are going to use a tool from Rancher Gov called Hauler. Currently we are not using all the features of Hauler. This guide is using the FlashArray as the target storage device. There a few things we will need to connect. An API token for the `pureuser`, the ip address, a linux host with internet access, and a linux host with access to the array.
+This guide will show how we can easily air gap all the Pure and Portworx bits for Harvester. It is heavily based on https://docs.portworx.com/portworx-csi/install/airgapped-install#configure-portworx-version-manifest. We are going to use a tool from Rancher Gov called Hauler. Currently we are not using all the features of Hauler. This guide is using the FlashArray as the target storage device. There a few things we will need to connect. An API token for the `pureuser`, the ip address, a linux host with internet access, and a linux host with access to the array.
 
 ## install hauler - INTERNET side
 
