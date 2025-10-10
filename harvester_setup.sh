@@ -116,16 +116,24 @@ data:
     packages:
       - vim
       - sudo
-      - bind-utils
       - qemu-guest-agent
       - rsync
-      - htop
     runcmd:
-      - sysctl -w net.ipv6.conf.all.disable_ipv6=1
-      - systemctl restart qemu-guest-agent
-      - yum install -y epel-release && yum install -y htop jq
-      - systemctl disable --now cockpit.service cockpit.socket
-      - yum remove -y cockpit-bridge cockpit-system cockpit-ws rpcbind
+      - |
+        if grep -q "Ubuntu" /etc/os-release; then
+          echo "Ubuntu"
+          apt update
+          apt install -y htop jq
+        elif grep -q "Rocky" /etc/os-release; then
+          echo "Rocky"
+          yum install -y epel-release bind-utils && yum install -y htop jq
+          systemctl disable --now cockpit.service cockpit.socket
+          yum remove -y cockpit-bridge cockpit-system cockpit-ws rpcbind
+        else
+          echo "everything else"
+          sysctl -w net.ipv6.conf.all.disable_ipv6=1
+          systemctl restart qemu-guest-agent
+        fi
     ssh_pwauth: True
     users:
       - name: root
