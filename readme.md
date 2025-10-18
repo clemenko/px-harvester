@@ -141,6 +141,9 @@ spec:
   monitoring:
     telemetry:
       enabled: false
+    prometheus:
+      enabled: false
+      exportMetrics: false
   env:
   - name: PURE_FLASHARRAY_SAN_TYPE
     value: "ISCSI"

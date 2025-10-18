@@ -1,0 +1,60 @@
+{
+  "apiVersion": "v1",
+  "kind": "Namespace",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"name\":\"portworx\"}}\n"
+    },
+    "creationTimestamp": "2025-10-18T19:09:41Z",
+    "deletionTimestamp": "2025-10-18T19:20:11Z",
+    "labels": {
+      "kubernetes.io/metadata.name": "portworx"
+    },
+    "name": "portworx",
+    "resourceVersion": "267869",
+    "uid": "470a4705-dcae-4d8f-91ad-1e8031d5e7a4"
+  },
+  "spec": {
+    "finalizers": []
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2025-10-18T19:20:16Z",
+        "message": "All resources successfully discovered",
+        "reason": "ResourcesDiscovered",
+        "status": "False",
+        "type": "NamespaceDeletionDiscoveryFailure"
+      },
+      {
+        "lastTransitionTime": "2025-10-18T19:20:16Z",
+        "message": "All legacy kube types successfully parsed",
+        "reason": "ParsedGroupVersions",
+        "status": "False",
+        "type": "NamespaceDeletionGroupVersionParsingFailure"
+      },
+      {
+        "lastTransitionTime": "2025-10-18T19:20:22Z",
+        "message": "All content successfully deleted, may be waiting on finalization",
+        "reason": "ContentDeleted",
+        "status": "False",
+        "type": "NamespaceDeletionContentFailure"
+      },
+      {
+        "lastTransitionTime": "2025-10-18T19:20:22Z",
+        "message": "Some resources are remaining: storageclusters.core.libopenstorage.org has 1 resource instances",
+        "reason": "SomeResourcesRemain",
+        "status": "True",
+        "type": "NamespaceContentRemaining"
+      },
+      {
+        "lastTransitionTime": "2025-10-18T19:20:22Z",
+        "message": "Some content in the namespace has finalizers remaining: operator.libopenstorage.org/delete in 1 resource instances",
+        "reason": "SomeFinalizersRemain",
+        "status": "True",
+        "type": "NamespaceFinalizersRemaining"
+      }
+    ],
+    "phase": "Terminating"
+  }
+}
