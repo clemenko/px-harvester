@@ -134,25 +134,13 @@ metadata:
     portworx.io/misc-args: "--oem px-csi"
     portworx.io/health-check: "skip"
 spec:
-  image: portworx/oci-monitor:25.8.0
+  image: portworx/px-pure-csi-driver:25.8.0
   imagePullPolicy: IfNotPresent
-  kvdb:
-    internal: true
-  cloudStorage:
-    kvdbDeviceSpec: size=20
-  stork:
-    enabled: false
-  security:
-    enabled: false
   csi:
     enabled: true
-    installSnapshotController: true
   monitoring:
     telemetry:
       enabled: false
-    prometheus:
-      enabled: false
-      exportMetrics: false
   env:
   - name: PURE_FLASHARRAY_SAN_TYPE
     value: "ISCSI"
