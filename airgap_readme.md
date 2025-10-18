@@ -26,7 +26,7 @@ spec:
     #- path: https://raw.githubusercontent.com/PureStorage-OpenConnect/pure-fa-openmetrics-exporter/refs/heads/master/extra/grafana/grafana-purefa-flasharray-overview.json
     #- path: https://static.pure1.purestorage.com/vm-analytics-collector/pure-vmware-appliance-latest-signed.ova
     #- path: https://static.pure1.purestorage.com/vm-analytics-collector/purestorage-ova-latest.iso
-    - path: https://install.portworx.com/25.6.0/version?kbver=1.32.8
+    - path: https://install.portworx.com/25.8.0/version?kbver=1.32.8
       name: versions.yaml
     - path: https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx
       name: operator.yaml
@@ -55,7 +55,7 @@ spec:
   images:
 EOF
 
-for i in $(curl -s https://install.portworx.com/25.6.0/images); do echo "    - name: "$i >> /opt/pure/airgap.yaml ; done
+for i in $(curl -s https://install.portworx.com/25.8.0/images); do echo "    - name: "$i >> /opt/pure/airgap.yaml ; done
 ```
 
 Now we can sync and create the local hauler store. This can take a minute or two depending on the images.
@@ -307,7 +307,7 @@ metadata:
     portworx.io/misc-args: "--oem px-csi"
 #    portworx.io/health-check: "skip"
 spec:
-  image: portworx/oci-monitor:25.6.0
+  image: portworx/oci-monitor:25.8.0
   imagePullPolicy: IfNotPresent
   customImageRegistry: X.X.X.X
   # imagePullSecret: px-reg-secret
