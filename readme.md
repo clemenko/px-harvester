@@ -1,10 +1,10 @@
 # PX + Harvester
 
-This is a quick guide for adding Portworx CSI ( PX-CSI 25.6.0 ) to Harvester.
+This is a quick guide for adding Portworx CSI ( PX-CSI 25.8.0 ) to Harvester.
 
 Based on https://docs.harvesterhci.io/v1.6/advanced/csidriver/.
 
-Currently only [v1.6.0](https://github.com/harvester/harvester/releases/tag/v1.6.0) and above supports remote booting.
+Currently only [v1.6.1](https://github.com/harvester/harvester/releases/tag/v1.6.1) and above supports remote booting.
 
 tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester cluster. Patch `storageprofile` for known issue.
 
@@ -118,7 +118,7 @@ EOF
 
 kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
-kubectl apply -f 'https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx'
+kubectl apply -f 'https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.33.5&ns=portworx'
 
 # add annotation of "portworx.io/health-check: "skip" " for running on a single node
 
@@ -134,7 +134,7 @@ metadata:
     portworx.io/misc-args: "--oem px-csi"
     portworx.io/health-check: "skip"
 spec:
-  image: portworx/oci-monitor:25.6.0
+  image: portworx/oci-monitor:25.8.0
   imagePullPolicy: IfNotPresent
   kvdb:
     internal: true
