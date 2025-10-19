@@ -28,7 +28,7 @@ spec:
     #- path: https://static.pure1.purestorage.com/vm-analytics-collector/purestorage-ova-latest.iso
     - path: https://install.portworx.com/25.8.0/version?kbver=1.32.8
       name: versions.yaml
-    - path: https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx
+    - path: https://install.portworx.com/25.8?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx
       name: operator.yaml
     - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/readme.md
       name: px_harvester.md

@@ -118,7 +118,7 @@ EOF
 
 kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
-kubectl apply -f 'https://install.portworx.com/?comp=pxoperator&oem=px-csi&kbver=1.33.5&ns=portworx'
+kubectl apply -f 'https://install.portworx.com/25.8?comp=pxoperator&oem=px-csi&kbver=1.33.5&ns=portworx'
 
 # add annotation of "portworx.io/health-check: "skip" " for running on a single node
 
@@ -161,17 +161,17 @@ cat << EOF | kubectl apply -f -
 apiVersion: harvesterhci.io/v1beta1
 kind: VirtualMachineImage
 metadata:
-  name: fa-plucky
+  name: fa-questing
   namespace: default
   annotations:
     harvesterhci.io/storageClassName: px-fa-direct-access
 spec:
   backend: cdi
-  displayName: fa-plucky
+  displayName: fa-questing
   retry: 3
   sourceType: download
   targetStorageClassName: px-fa-direct-access
-  url: https://cloud-images.ubuntu.com/minimal/releases/plucky/release/ubuntu-25.04-minimal-cloudimg-amd64.img
+  url: https://cloud-images.ubuntu.com/questing/current/questing-server-cloudimg-amd64.img
 EOF
 ```
 
