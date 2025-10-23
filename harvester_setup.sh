@@ -82,7 +82,7 @@ metadata:
     harvesterhci.io/os-type: ubuntu
   namespace: default
 spec:
-  displayName: plucky
+  displayName: questing
   retry: 3
   sourceType: download
   storageClassParameters:
