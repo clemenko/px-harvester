@@ -134,7 +134,7 @@ metadata:
     portworx.io/misc-args: "--oem px-csi"
     portworx.io/health-check: "skip"
 spec:
-  image: portworx/px-pure-csi-driver:25.8.0
+  image: portworx/px-pure-csi-driver:25.8.1
   imagePullPolicy: IfNotPresent
   csi:
     enabled: true
