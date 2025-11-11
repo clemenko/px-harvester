@@ -103,8 +103,14 @@ reboot the nodes to make sure this takes effect.
 Here we are going to install the CSI. Note the API token for a "storage admin" user. Here are the docs : https://docs.portworx.com/portworx-enterprise/platform/kubernetes/flasharray/install/install-flasharray/install-flasharray-cd-da
 
 ```bash
+
+# get latest version of PX-CSI
+PX_CSI_VER=$(curl -sL https://dzver.rfed.io/json | jq -r .portworx)
+
+# create namespace
 kubectl create ns portworx
 
+# create and add secret
 cat << EOF > pure.json 
 {
     "FlashArrays": [
@@ -115,10 +121,10 @@ cat << EOF > pure.json
     ]
 }
 EOF
-
 kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
-kubectl apply -f 'https://install.portworx.com/25.8?comp=pxoperator&oem=px-csi&kbver=1.33.5&ns=portworx'
+# apply operator yaml
+kubectl apply -f 'https://install.portworx.com/'$PX_CSI_VER'comp=pxoperator&oem=px-csi&kbver=1.33.5&ns=portworx'
 
 # add annotation of "portworx.io/health-check: "skip" " for running on a single node
 
@@ -132,9 +138,9 @@ metadata:
   namespace: portworx
   annotations:
     portworx.io/misc-args: "--oem px-csi"
-    portworx.io/health-check: "skip"
+    #portworx.io/health-check: "skip"
 spec:
-  image: portworx/px-pure-csi-driver:25.8.1
+  image: portworx/px-pure-csi-driver:$PX_CSI_VER
   imagePullPolicy: IfNotPresent
   csi:
     enabled: true
