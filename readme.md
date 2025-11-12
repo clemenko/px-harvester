@@ -1,10 +1,12 @@
 # PX + Harvester
 
-This is a quick guide for adding Portworx CSI ( PX-CSI 25.8.0 ) to Harvester.
+This is a quick guide for adding Portworx CSI ( PX-CSI 25.8.1 ) to Harvester.
 
 Based on https://docs.harvesterhci.io/v1.6/advanced/csidriver/.
 
 Currently only [v1.6.1](https://github.com/harvester/harvester/releases/tag/v1.6.1) and above supports remote booting.
+
+Please also check out https://dzver.rfed.io for the last versions of all these components.
 
 tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester cluster. Patch `storageprofile` for known issue.
 
