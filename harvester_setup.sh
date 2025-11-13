@@ -35,10 +35,10 @@ token=$(curl -sk -X POST https://$vip/v3-public/localProviders/local?action=logi
 curl -sk https://$vip/v3/users?action=changepassword -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"currentPassword":"admin","newPassword":"'$longPassword'"}'
 
 # reauthenticate
-api_token=$(curl -sk https://$vip/v3/token -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"type":"token","description":"automation"}' | jq -r .token)
+token=$(curl -sk -X POST https://$vip/v3-public/localProviders/local?action=login -H 'content-type: application/json' -d '{"username":"admin","password":"'$longPassword'"}' | jq -r .token)
  
 info " - getting kubeconfig"
-curl -sk https://$vip/v1/management.cattle.io.clusters/local?action=generateKubeconfig -H "Authorization: Bearer $api_token" -X POST -H 'content-type: application/json' | jq -r .config | sed -e '/certificate-authority-data/,18d' -e '/server/ a\'$'\n''    insecure-skip-tls-verify: true' > $vip.yaml
+curl -sk https://$vip/v1/management.cattle.io.clusters/local?action=generateKubeconfig -H "Authorization: Bearer $token" -X POST -H 'content-type: application/json' | jq -r .config | sed -e '/certificate-authority-data/,18d' -e '/server/ a\'$'\n''    insecure-skip-tls-verify: true' > $vip.yaml
 export KUBECONFIG=$vip.yaml
 
 # load password length, image, network, keypair and template
@@ -159,8 +159,6 @@ EOF
 # delete if you want the long password
 # password shortener - one last time
 token=$(curl -sk -X POST https://$vip/v3-public/localProviders/local?action=login -H 'content-type: application/json' -d '{"username":"admin","password":"'$longPassword'"}' | jq -r .token)
-
-api_token=$(curl -sk https://$vip/v3/token -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"type":"token","description":"automation"}' | jq -r .token)
 
 curl -sk https://$vip/v3/users?action=changepassword -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"currentPassword":"'$longPassword'","newPassword":"'$shortPassword'"}'
 
