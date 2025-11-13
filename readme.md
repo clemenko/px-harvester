@@ -126,7 +126,7 @@ EOF
 kubectl create secret generic px-pure-secret -n portworx --from-file=pure.json=pure.json
 
 # apply operator yaml
-kubectl apply -f 'https://install.portworx.com/'$PX_CSI_VER'comp=pxoperator&oem=px-csi&kbver=1.33.5&ns=portworx'
+kubectl apply -f 'https://install.portworx.com/'$PX_CSI_VER'?comp=pxoperator&oem=px-csi&kbver=1.33.5&ns=portworx'
 
 # add annotation of "portworx.io/health-check: "skip" " for running on a single node
 
