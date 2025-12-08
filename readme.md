@@ -118,7 +118,8 @@ cat << EOF > pure.json
     "FlashArrays": [
         {
             "MgmtEndPoint": "192.168.1.11",
-            "APIToken": "934f95b6-6d1d-ee91-d210-6ed9bce13ad1"
+            "APIToken": "934f95b6-6d1d-ee91-d210-6ed9bce13ad1",
+            "NFSEndPoint": "1921.68.1.8"
         }
     ]
 }
