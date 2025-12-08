@@ -70,26 +70,7 @@ spec:
     numberOfReplicas: '3'
     staleReplicaTimeout: '30'
   url: https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2
----
-apiVersion: harvesterhci.io/v1beta1
-kind: VirtualMachineImage
-metadata:
-  name: questing
-  annotations:
-    harvesterhci.io/storageClassName: harvester-longhorn
-  labels:
-    harvesterhci.io/image-type: raw_qcow2
-    harvesterhci.io/os-type: ubuntu
-  namespace: default
-spec:
-  displayName: questing
-  retry: 3
-  sourceType: download
-  storageClassParameters:
-    migratable: 'true'
-    numberOfReplicas: '3'
-    staleReplicaTimeout: '30'
-  url: https://cloud-images.ubuntu.com/questing/current/questing-server-cloudimg-amd64.img
+
 ---
 
 apiVersion: harvesterhci.io/v1beta1
@@ -107,7 +88,7 @@ kind: ConfigMap
 metadata:
   labels:
     harvesterhci.io/cloud-init-template: user
-  name: default
+  name: cloudinit
   namespace: default
 data:
   cloudInit: |-
@@ -132,7 +113,7 @@ data:
         else
           echo "everything else"
           sysctl -w net.ipv6.conf.all.disable_ipv6=1
-          systemctl restart qemu-guest-agent
+          systemctl daemon-reload && systemctl enable --now qemu-guest-agent
         fi
     ssh_pwauth: True
     users:
@@ -142,6 +123,24 @@ data:
         shell: /bin/bash
         ssh_authorized_keys:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFJzDQSc2ckhjcf0HqDUJUbF3kdqwJtViW3o7SWSIbf9 clemenko@clempro.local
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    harvesterhci.io/cloud-init-template: network
+  name: network
+  namespace: default
+data:
+  cloudInit: |-
+    network:
+      version: 1
+      config:
+        - type: physical
+          name: eth0
+          subnets:
+            - type: dhcp
 
 ---
 

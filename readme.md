@@ -105,7 +105,6 @@ reboot the nodes to make sure this takes effect.
 Here we are going to install the CSI. Note the API token for a "storage admin" user. Here are the docs : https://docs.portworx.com/portworx-enterprise/platform/kubernetes/flasharray/install/install-flasharray/install-flasharray-cd-da
 
 ```bash
-
 # get latest version of PX-CSI
 PX_CSI_VER=$(curl -sL https://dzver.rfed.io/json | jq -r .portworx)
 
@@ -119,7 +118,7 @@ cat << EOF > pure.json
         {
             "MgmtEndPoint": "192.168.1.11",
             "APIToken": "934f95b6-6d1d-ee91-d210-6ed9bce13ad1",
-            "NFSEndPoint": "1921.68.1.8"
+            "NFSEndPoint": "192.168.1.8"
         }
     ]
 }
