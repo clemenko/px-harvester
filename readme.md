@@ -2,13 +2,13 @@
 
 This is a quick guide for adding Portworx CSI ( PX-CSI 25.8.1 ) to Harvester.
 
-Based on https://docs.harvesterhci.io/v1.6/advanced/csidriver/.
+Based on https://docs.harvesterhci.io/v1.7/advanced/csidriver/.
 
 Currently only [v1.6.1](https://github.com/harvester/harvester/releases/tag/v1.6.1) and above supports remote booting.
 
 Please also check out https://dzver.rfed.io for the last versions of all these components.
 
-tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester cluster. Patch `storageprofile` for known issue.
+tl:dr - Add multipathd. Add PX CSI, that points to an FA, to the Harvester cluster. 
 
 ## Install Harvester
 
@@ -160,7 +160,7 @@ EOF
 
 ## update csi settings
 
-Update the Harvester CSI settings - https://docs.harvesterhci.io/v1.6/advanced/csidriver/#configure-harvester-cluster.
+Update the Harvester CSI settings - https://docs.harvesterhci.io/v1.7/advanced/csidriver#configure-harvester-cluster.
 
 ## add image
 
@@ -169,17 +169,17 @@ cat << EOF | kubectl apply -f -
 apiVersion: harvesterhci.io/v1beta1
 kind: VirtualMachineImage
 metadata:
-  name: fa-questing
+  name: fa-rocky
   namespace: default
   annotations:
     harvesterhci.io/storageClassName: px-fa-direct-access
 spec:
   backend: cdi
-  displayName: fa-questing
+  displayName: fa-rocky
   retry: 3
   sourceType: download
   targetStorageClassName: px-fa-direct-access
-  url: https://cloud-images.ubuntu.com/questing/current/questing-server-cloudimg-amd64.img
+  url: https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2
 EOF
 ```
 
