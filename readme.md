@@ -4,7 +4,7 @@ This is a quick guide for adding Portworx CSI ( PX-CSI 25.8.1 ) to Harvester.
 
 Based on https://docs.harvesterhci.io/v1.7/advanced/csidriver/.
 
-Currently only [v1.6.1](https://github.com/harvester/harvester/releases/tag/v1.6.1) and above supports remote booting.
+Currently only [v1.7.0](https://github.com/harvester/harvester/releases/tag/v1.7.0) and above supports remote booting.
 
 Please also check out https://dzver.rfed.io for the last versions of all these components.
 
@@ -28,7 +28,7 @@ run the attached script for easy setup of images and networking.
 to all the harvester nodes
 
 ```bash
-cat << EOF | kubectl apply -f -
+kubectl apply -f - << EOF 
 apiVersion: node.harvesterhci.io/v1beta1
 kind: CloudInit
 metadata:
@@ -132,7 +132,7 @@ kubectl apply -f 'https://install.portworx.com/'$PX_CSI_VER'?comp=pxoperator&oem
 
 #  If you want nvme-tcp change the value: "NVMEOF-TCP"
 
-cat << EOF | kubectl apply -n portworx  -f -
+kubectl apply -n portworx  -f - << EOF 
 kind: StorageCluster
 apiVersion: core.libopenstorage.org/v1
 metadata:
