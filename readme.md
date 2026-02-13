@@ -132,6 +132,8 @@ kubectl apply -f 'https://install.portworx.com/'$PX_CSI_VER'?comp=pxoperator&oem
 
 #  If you want nvme-tcp change the value: "NVMEOF-TCP"
 
+# or FA NFS : https://docs.portworx.com/portworx-csi/provision-storage/dynamic-provisioning/flasharray-file-services
+
 kubectl apply -n portworx  -f - << EOF 
 kind: StorageCluster
 apiVersion: core.libopenstorage.org/v1
