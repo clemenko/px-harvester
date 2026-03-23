@@ -14,6 +14,9 @@ Ww are going to generate the hauler manifest yaml. A good idea is to save that t
 
 ```bash
 mkdir -p /opt/pure; cd /opt/pure
+
+PX_CSI_VER=$(curl -sL https://dzver.rfed.io/json | jq -r .portworx)
+
 cat << EOF > /opt/pure/airgap.yaml
 apiVersion: content.hauler.cattle.io/v1
 kind: Files
@@ -24,11 +27,10 @@ spec:
     #- path: https://releases.purestorage.com/flasharray/purity/6.9.2/purity_6.9.2_202510142333%2Baf11cde1386b.ppkg
     #- path: https://releases.purestorage.com/flasharray/purity/6.9.2/purity_6.9.2_202510142333%2Baf11cde1386b.ppkg.sha1
     #- path: https://raw.githubusercontent.com/PureStorage-OpenConnect/pure-fa-openmetrics-exporter/refs/heads/master/extra/grafana/grafana-purefa-flasharray-overview.json
-    #- path: https://static.pure1.purestorage.com/vm-analytics-collector/pure-vmware-appliance-latest-signed.ova
-    #- path: https://static.pure1.purestorage.com/vm-analytics-collector/purestorage-ova-latest.iso
-    - path: https://install.portworx.com/25.8.0/version?kbver=1.32.8
+    # - path: https://releases.rancher.com/harvester/v1.7.1/harvester-v1.7.1-amd64.iso
+    - path: https://install.portworx.com/$PX_CSI_VER/version?kbver=1.32.8
       name: versions.yaml
-    - path: https://install.portworx.com/25.8?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx
+    - path: https://install.portworx.com/$PX_CSI_VER?comp=pxoperator&oem=px-csi&kbver=1.32.3&ns=portworx
       name: operator.yaml
     - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/readme.md
       name: px_harvester.md
@@ -55,7 +57,7 @@ spec:
   images:
 EOF
 
-for i in $(curl -s https://install.portworx.com/25.8.0/images); do echo "    - name: "$i >> /opt/pure/airgap.yaml ; done
+for i in $(curl -s https://install.portworx.com/$PX_CSI_VER/images); do echo "    - name: "$i >> /opt/pure/airgap.yaml ; done
 ```
 
 Now we can sync and create the local hauler store. This can take a minute or two depending on the images.

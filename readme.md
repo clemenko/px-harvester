@@ -20,7 +20,7 @@ run the attached script for easy setup of images and networking.
 
 ```bash
 # my notes
-./harvester_setup.sh && mv 192.168.1.12.yaml ~/Dropbox/work/rfed.me/slim.yaml
+./harvester_setup.sh && mv 192.168.1.12.yaml ~/Dropbox/work/rfed.me/r440.yaml
 ```
 
 ## add multipathd
