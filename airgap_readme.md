@@ -2,6 +2,8 @@
 
 This guide will show how we can easily air gap all the Pure and Portworx bits for Harvester. It is heavily based on https://docs.portworx.com/portworx-csi/install/airgapped-install#configure-portworx-version-manifest. We are going to use a tool from Rancher Gov called Hauler. Currently we are not using all the features of Hauler. This guide is using the FlashArray as the target storage device. There a few things we will need to connect. An API token for the `pureuser`, the ip address, a linux host with internet access, and a linux host with access to the array.
 
+Or watch the video : https://youtu.be/SJHFvABdvUA
+
 ## install hauler - INTERNET side
 
 We are going to use the linux server with internet access. We will collect and tar the bits we need. Using Hauler as the swiss army knife for collecting and serving files across an air gap. https://docs.hauler.dev/docs/intro
@@ -35,8 +37,9 @@ spec:
     - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/readme.md
       name: px_harvester.md
     - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/StorageCluster_example.yaml
-    - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/airgap_reademe.md
-    - path: https://cloud-images.ubuntu.com/minimal/releases/plucky/release/ubuntu-25.04-minimal-cloudimg-amd64.img
+    - path: https://raw.githubusercontent.com/clemenko/px-harvester/refs/heads/main/airgap_readme.md
+    - path: https://mirrors.portworx.com/packages/px-cli/latest/px-v1.2.0.linux.amd64.tar.gz
+    # - path: https://cloud-images.ubuntu.com/minimal/releases/plucky/release/ubuntu-25.04-minimal-cloudimg-amd64.img
 ---
 apiVersion: content.hauler.cattle.io/v1
 kind: Charts
