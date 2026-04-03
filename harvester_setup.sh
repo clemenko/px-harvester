@@ -161,4 +161,14 @@ token=$(curl -sk -X POST https://$vip/v3-public/localProviders/local?action=logi
 
 curl -sk https://$vip/v3/users?action=changepassword -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"currentPassword":"'$longPassword'","newPassword":"'$shortPassword'"}'
 
+# add certs
+
+curlcert=$( awk 'NF {printf "%s\\\\n", $0}' /Users/clemenko/Dropbox/work/rfed.me/io/star.rfed.io.cert )
+curlkey=$( awk 'NF {printf "%s\\\\n", $0}' /Users/clemenko/Dropbox/work/rfed.me/io/star.rfed.io.key )
+curlca=$( awk 'NF {printf "%s\\n", $0}' /Users/clemenko/Dropbox/work/rfed.me/io/cacerts.pem )
+
+#token=$(curl -sk -X POST https://$vip/v3-public/localProviders/local?action=login -H 'content-type: application/json' -d '{"username":"admin","password":"'$shortPassword'"}' | jq -r .token)
+
+#curl -sk -X 'PUT' https://$vip/v1/harvester/harvesterhci.io.settings/ssl-certificates -H 'content-type: application/json' -H "Authorization: Bearer $token" -d ''{"id":"ssl-certificates","type":"harvesterhci.io.setting","apiVersion":"harvesterhci.io/v1beta1","default":"{}","kind":"Setting","__clone":true,"value":"{\"publicCertificate\":\"'$curlcert'\",\"privateKey\":\"'$curlkey'\",\"ca\":\"\"}"}'
+
 info Complete
