@@ -185,4 +185,23 @@ spec:
 EOF
 ```
 
+## or a simple pvc test
+
+```bash
+
+kubectl apply -n portworx  -f - << EOF 
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: demopvc
+spec:
+  storageClassName: px-fa-direct-access
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1234Mi
+EOF
+```
+
 Success.
