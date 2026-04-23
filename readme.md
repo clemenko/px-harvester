@@ -188,7 +188,6 @@ EOF
 ## or a simple pvc test
 
 ```bash
-
 kubectl apply -n portworx  -f - << EOF 
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -205,3 +204,41 @@ EOF
 ```
 
 Success.
+
+## optional storage class
+
+from https://docs.portworx.com/portworx-csi/reference/storage-class#storageclass
+
+```bash
+kubectl apply -n portworx  -f - << EOF 
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: px-fb-direct-access-nfsv4-hardquota
+mountOptions:
+- nfsvers=4.1
+- tcp
+allowVolumeExpansion: false
+parameters:
+  backend: pure_file
+  pure_export_rules: '*(rw)'
+provisioner: pxd.portworx.com
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+EOF
+
+# or 
+
+kubectl apply -n portworx  -f - << EOF
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: px-fa-direct-access
+allowVolumeExpansion: true
+parameters:
+  backend: pure_block #pure_fa_file
+provisioner: pxd.portworx.com
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+EOF
+```
